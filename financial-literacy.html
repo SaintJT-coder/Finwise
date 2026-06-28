@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinWise — Financial Literacy for Everyone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:     #1a1a2e;
+      --slate:   #4a5568;
+      --silver:  #e8eaf0;
+      --cream:   #fafaf8;
+      --gold:    #c9a84c;
+      --gold-lt: #f0e0a8;
+      --white:   #ffffff;
+      --card-shadow: 0 2px 16px rgba(26,26,46,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--silver);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      height: 60px;
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--gold); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--slate);
+      text-decoration: none;
+      padding-bottom: 2px;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--ink);
+      border-bottom-color: var(--gold);
+    }
+
+    .nav-cta {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      background: var(--gold);
+      padding: 0.45rem 1.1rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 72vh;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1a1a2e 0%, #2d3561 55%, #1a3a4a 100%);
+    }
+
+    .hero-art {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.12;
+    }
+
+    .hero-art svg { width: 100%; height: 100%; }
+
+    /* Subtle money/graph illustration overlay */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(26,26,46,0.88) 30%, rgba(26,26,46,0.2) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 860px;
+      padding: 4rem 5% 5rem;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 0.25rem 0.7rem;
+      border-radius: 2px;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 1.1rem;
+      max-width: 680px;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.72);
+      max-width: 520px;
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--gold);
+      color: var(--ink);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.7rem 1.6rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+
+    .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.7rem 1.4rem;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.3);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── STATS STRIP ── */
+    .stats {
+      background: var(--white);
+      border-bottom: 1px solid var(--silver);
+      display: flex;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .stat {
+      padding: 1.4rem 3rem;
+      text-align: center;
+      border-right: 1px solid var(--silver);
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--slate);
+      margin-top: 0.15rem;
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .section {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 3.5rem 5%;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--silver);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .section-link {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .section-link:hover { text-decoration: underline; }
+
+    /* ── FEATURED (3-col) ── */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--white);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(26,26,46,0.13);
+    }
+
+    /* Video placeholder */
+    .card-media {
+      position: relative;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #2d3561, #1a3a4a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Slot for user to drop an iframe or img */
+    .card-media iframe,
+    .card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: none;
+    }
+
+    .play-btn {
+      position: absolute;
+      width: 52px;
+      height: 52px;
+      background: rgba(201,168,76,0.92);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .play-btn svg { width: 20px; height: 20px; fill: #fff; margin-left: 3px; }
+
+    .card-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--gold-lt);
+      padding: 0.2rem 0.55rem;
+      border-radius: 2px;
+    }
+
+    .card-body {
+      padding: 1.15rem 1.25rem 1.4rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.02rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--ink);
+      margin-bottom: 0.6rem;
+    }
+
+    .card-desc {
+      font-size: 0.83rem;
+      color: var(--slate);
+      line-height: 1.6;
+      flex: 1;
+      /* User will replace this placeholder text */
+    }
+
+    .card-meta {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: #9aa3b3;
+    }
+
+    .card-duration {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .card-duration svg { width: 12px; height: 12px; stroke: currentColor; fill: none; }
+
+    /* ── TOPIC PILL FILTER ── */
+    .filter-bar {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.35rem 0.95rem;
+      border-radius: 100px;
+      border: 1px solid var(--silver);
+      background: var(--white);
+      color: var(--slate);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+
+    .pill:hover, .pill.active {
+      background: var(--gold);
+      color: var(--ink);
+      border-color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* ── ALL TOPICS GRID (2-col wide cards) ── */
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .card-wide {
+      flex-direction: row;
+    }
+
+    .card-wide .card-media {
+      width: 200px;
+      min-width: 200px;
+      aspect-ratio: unset;
+      height: auto;
+    }
+
+    /* ── QUOTE ── */
+    .quote-strip {
+      background: var(--ink);
+      padding: 3rem 5%;
+      text-align: center;
+    }
+
+    .quote-strip blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      font-weight: 400;
+      color: var(--white);
+      max-width: 700px;
+      margin: 0 auto 0.75rem;
+      line-height: 1.5;
+    }
+
+    .quote-strip cite {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--silver);
+      padding: 2rem 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .footer-logo span { color: var(--gold); }
+
+    footer p {
+      font-size: 0.78rem;
+      color: var(--slate);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .featured-grid { grid-template-columns: 1fr 1fr; }
+      .topics-grid { grid-template-columns: 1fr; }
+      .card-wide { flex-direction: column; }
+      .card-wide .card-media { width: 100%; height: 180px; }
+      .stats { flex-wrap: wrap; }
+      .stat { border-right: none; border-bottom: 1px solid var(--silver); flex: 1 0 45%; }
+    }
+
+    @media (max-width: 600px) {
+      .featured-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hero h1 { font-size: 1.9rem; }
+      .stat { flex: 1 0 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="#">Fin<span>Wise</span></a>
+  <ul class="nav-links">
+    <li><a href="#featured" class="active">Home</a></li>
+    <li><a href="#budgeting">Budgeting</a></li>
+    <li><a href="#investing">Investing</a></li>
+    <li><a href="#credit">Credit</a></li>
+    <li><a href="#retirement">Retirement</a></li>
+  </ul>
+  <a class="nav-cta" href="#featured">Start Learning →</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <!-- Subtle SVG background art -->
+  <div class="hero-art" aria-hidden="true">
+    <svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="0,500 150,380 300,420 450,280 600,310 750,160 900,200 1050,80 1200,120" stroke="#c9a84c" stroke-width="3" fill="none"/>
+      <polyline points="0,550 200,460 400,490 600,370 800,410 1000,290 1200,320" stroke="#4a90d9" stroke-width="2" fill="none"/>
+      <circle cx="750" cy="160" r="8" fill="#c9a84c"/>
+      <circle cx="450" cy="280" r="5" fill="#c9a84c"/>
+      <circle cx="1050" cy="80" r="6" fill="#c9a84c"/>
+    </svg>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-eyebrow">Financial Literacy</span>
+    <h1>Build a Smarter Future with Your Money</h1>
+    <p>Simple, honest lessons on budgeting, investing, credit, and retirement — made for real people, not Wall Street.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#featured">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+        Watch First Lesson
+      </a>
+      <a class="btn-ghost" href="#all-topics">Browse All Topics</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<div class="stats" role="region" aria-label="At a glance">
+  <div class="stat">
+    <div class="stat-num">6</div>
+    <div class="stat-label">Core Topics</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">Free</div>
+    <div class="stat-label">Always & Forever</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">Beginner</div>
+    <div class="stat-label">Friendly</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">5–15 min</div>
+    <div class="stat-label">Per Lesson</div>
+  </div>
+</div>
+
+<!-- ── FEATURED LESSONS ── -->
+<main>
+  <div class="section" id="featured">
+    <div class="section-header">
+      <h2 class="section-title">Featured Lessons</h2>
+      <a class="section-link" href="#all-topics">View all →</a>
+    </div>
+
+    <div class="featured-grid">
+
+      <!-- CARD 1 — replace the placeholder content below -->
+      <article class="card">
+        <div class="card-media">
+          <!--
+            TO ADD A VIDEO: replace the div below with:
+            <iframe src="YOUR_YOUTUBE_EMBED_URL" allowfullscreen></iframe>
+            Example: <iframe src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe>
+          -->
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;color:rgba(255,255,255,0.3);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M9 8l8 4-8 4V8z"/></svg>
+            Add your video here
+          </div>
+          <span class="card-tag">Budgeting</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">How to Build Your First Budget</h3>
+          <p class="card-desc">Add your lesson description here. Explain what viewers will learn and why it matters in 2–3 sentences.</p>
+          <div class="card-meta">
+            <span class="card-duration">
+              <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ~10 min
+            </span>
+            <span>Lesson 1</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 2 -->
+      <article class="card">
+        <div class="card-media">
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;color:rgba(255,255,255,0.3);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M9 8l8 4-8 4V8z"/></svg>
+            Add your video here
+          </div>
+          <span class="card-tag">Saving</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">The Emergency Fund: Why You Need One</h3>
+          <p class="card-desc">Add your lesson description here. Explain what viewers will learn and why it matters in 2–3 sentences.</p>
+          <div class="card-meta">
+            <span class="card-duration">
+              <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ~8 min
+            </span>
+            <span>Lesson 2</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 3 -->
+      <article class="card">
+        <div class="card-media">
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;color:rgba(255,255,255,0.3);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M9 8l8 4-8 4V8z"/></svg>
+            Add your video here
+          </div>
+          <span class="card-tag">Credit</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Understanding Your Credit Score</h3>
+          <p class="card-desc">Add your lesson description here. Explain what viewers will learn and why it matters in 2–3 sentences.</p>
+          <div class="card-meta">
+            <span class="card-duration">
+              <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ~12 min
+            </span>
+            <span>Lesson 3</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- ── QUOTE ── -->
+  <div class="quote-strip">
+    <blockquote>"A budget is telling your money where to go instead of wondering where it went."</blockquote>
+    <cite>— Dave Ramsey</cite>
+  </div>
+
+  <!-- ── ALL TOPICS ── -->
+  <div class="section" id="all-topics">
+    <div class="section-header">
+      <h2 class="section-title">All Topics</h2>
+    </div>
+
+    <div class="filter-bar" role="group" aria-label="Filter by topic">
+      <button class="pill active" onclick="filterCards(this, 'all')">All</button>
+      <button class="pill" onclick="filterCards(this, 'budgeting')">Budgeting</button>
+      <button class="pill" onclick="filterCards(this, 'investing')">Investing</button>
+      <button class="pill" onclick="filterCards(this, 'credit')">Credit</button>
+      <button class="pill" onclick="filterCards(this, 'saving')">Saving</button>
+      <button class="pill" onclick="filterCards(this, 'retirement')">Retirement</button>
+      <button class="pill" onclick="filterCards(this, 'taxes')">Taxes</button>
+    </div>
+
+    <div class="topics-grid">
+
+      <!-- Wide CARD A — Investing -->
+      <article class="card card-wide" data-topic="investing" id="investing">
+        <div class="card-media">
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.4rem;color:rgba(255,255,255,0.25);font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;padding:1rem;text-align:center;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M9 8l8 4-8 4V8z"/></svg>
+            Add video
+          </div>
+          <span class="card-tag">Investing</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Investing 101: Where to Begin</h3>
+          <p class="card-desc">Add your lesson description here. Explain what viewers will learn and why it matters in 2–3 sentences.</p>
+          <div class="card-meta">
+            <span class="card-duration">
+              <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ~15 min
+            </span>
+            <span>Lesson 4</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Wide CARD B — Retirement -->
+      <article class="card card-wide" data-topic="retirement" id="retirement">
+        <div class="card-media">
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.4rem;color:rgba(255,255,255,0.25);font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;padding:1rem;text-align:center;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M9 8l8 4-8 4V8z"/></svg>
+            Add video
+          </div>
+          <span class="card-tag">Retirement</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">401(k) vs. Roth IRA: What's the Difference?</h3>
+          <p class="card-desc">Add your lesson description here. Explain what viewers will learn and why it matters in 2–3 sentences.</p>
+          <div class="card-meta">
+            <span class="card-duration">
+              <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ~12 min
+            </span>
+            <span>Lesson 5</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Wide CARD C — Taxes -->
+      <article class="card card-wide" data-topic="taxes" id="credit">
+        <div class="card-media">
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.4rem;color:rgba(255,255,255,0.25);font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;padding:1rem;text-align:center;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M9 8l8 4-8 4V8z"/></svg>
+            Add video
+          </div>
+          <span class="card-tag">Taxes</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Tax Basics Every Adult Should Know</h3>
+          <p class="card-desc">Add your lesson description here. Explain what viewers will learn and why it matters in 2–3 sentences.</p>
+          <div class="card-meta">
+            <span class="card-duration">
+              <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ~10 min
+            </span>
+            <span>Lesson 6</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Wide CARD D — Budgeting -->
+      <article class="card card-wide" data-topic="budgeting" id="budgeting">
+        <div class="card-media">
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.4rem;color:rgba(255,255,255,0.25);font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;padding:1rem;text-align:center;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M9 8l8 4-8 4V8z"/></svg>
+            Add video
+          </div>
+          <span class="card-tag">Budgeting</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">The 50/30/20 Rule Explained Simply</h3>
+          <p class="card-desc">Add your lesson description here. Explain what viewers will learn and why it matters in 2–3 sentences.</p>
+          <div class="card-meta">
+            <span class="card-duration">
+              <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ~8 min
+            </span>
+            <span>Lesson 7</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">Fin<span>Wise</span></div>
+  <p>Made with care for the people we love. Share freely.</p>
+  <p style="font-size:0.72rem;color:#b0b8c8;">Not financial advice — always consult a professional for your situation.</p>
+</footer>
+
+<script>
+  // Simple pill filter
+  function filterCards(btn, topic) {
+    // Toggle active pill
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Show/hide cards
+    document.querySelectorAll('.topics-grid .card').forEach(card => {
+      const match = topic === 'all' || card.dataset.topic === topic;
+      card.style.display = match ? 'flex' : 'none';
+    });
+  }
+
+  // Sticky nav highlight on scroll
+  const sections = document.querySelectorAll('section[id], div[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 80) current = sec.id;
+    });
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

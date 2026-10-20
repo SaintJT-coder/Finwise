@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Torres Enterprise — Financial Literacy for Family</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
@@ -487,7 +487,7 @@
       * { transition: none !important; }
     }
   </style>
-</head>
+<meta name="theme-color" content="#1a1a2e"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Finwise"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./app-icon.svg" type="image/svg+xml"><meta name="app-release" content="2026-10-20-pwa-1"><style>#app-update-banner{position:fixed;z-index:9999;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:12px;right:12px;padding:12px;border-radius:12px;background:#1a1a2e;color:white;display:none;justify-content:space-between;align-items:center;font:600 14px system-ui}#app-update-banner button{padding:10px;border:0;border-radius:8px;background:#c9a84c;color:#1a1a2e}</style></head>
 <body>
 
 <!-- ── NAV ── -->
@@ -787,5 +787,5 @@
   });
 </script>
 
-</body>
+<div id="app-update-banner"><span>Update available 🚀</span><button onclick="location.reload()">Refresh</button></div><script>(function(){var v='2026-10-20-pwa-1',b=document.getElementById('app-update-banner');function check(){if(document.hidden)return;fetch('./index.html?check='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(s=>{var m=s.match(/<meta name="app-release" content="([^"]+)"/);if(m&&m[1]!==v)b.style.display='flex'}).catch(()=>{})}setInterval(check,120000);window.addEventListener('focus',check);if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{})})();</script></body>
 </html>

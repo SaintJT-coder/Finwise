@@ -487,7 +487,7 @@
       * { transition: none !important; }
     }
   </style>
-<meta name="theme-color" content="#1a1a2e"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Finwise"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./app-icon.svg" type="image/svg+xml"><meta name="app-release" content="2026-10-20-pwa-1"><style>#app-update-banner{position:fixed;z-index:9999;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:12px;right:12px;padding:12px;border-radius:12px;background:#1a1a2e;color:white;display:none;justify-content:space-between;align-items:center;font:600 14px system-ui}#app-update-banner button{padding:10px;border:0;border-radius:8px;background:#c9a84c;color:#1a1a2e}</style></head>
+<meta name="theme-color" content="#1a1a2e"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Finwise"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./app-icon.svg" type="image/svg+xml"><meta name="app-release" content="2026-11-06-calculator-1"><style>#app-update-banner{position:fixed;z-index:9999;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:12px;right:12px;padding:12px;border-radius:12px;background:#1a1a2e;color:white;display:none;justify-content:space-between;align-items:center;font:600 14px system-ui}#app-update-banner button{padding:10px;border:0;border-radius:8px;background:#c9a84c;color:#1a1a2e}</style></head>
 <body>
 
 <!-- ── NAV ── -->
@@ -749,6 +749,49 @@
     </div>
   </div>
 </main>
+
+<section id="growth-calculator" style="background:#f0eee8;padding:4rem 5%;color:#1a1a2e" aria-labelledby="growth-title">
+  <div style="max-width:1000px;margin:auto">
+    <p style="font-size:.75rem;letter-spacing:.13em;text-transform:uppercase;color:#806821;font-weight:700">Practice with numbers</p>
+    <h2 id="growth-title" style="font-family:Playfair Display,serif;font-size:clamp(1.8rem,4vw,2.5rem);margin:0 0 .5rem">Compound growth calculator</h2>
+    <p style="max-width:650px;color:#4a5568">See how saving consistently can add up over time. These are hypothetical estimates, not guaranteed investment returns.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:1rem;margin-top:1.5rem">
+      <label for="calc-initial" style="font-weight:600">Starting savings ($)<input id="calc-initial" type="number" min="0" max="100000000" step="100" value="1000" style="display:block;width:100%;font:inherit;padding:.85rem;margin-top:.35rem;border:1px solid #adb4c1;border-radius:8px"></label>
+      <label for="calc-monthly" style="font-weight:600">Monthly contribution ($)<input id="calc-monthly" type="number" min="0" max="1000000" step="25" value="100" style="display:block;width:100%;font:inherit;padding:.85rem;margin-top:.35rem;border:1px solid #adb4c1;border-radius:8px"></label>
+      <label for="calc-rate" style="font-weight:600">Annual growth estimate (%)<input id="calc-rate" type="number" min="-20" max="20" step=".5" value="5" style="display:block;width:100%;font:inherit;padding:.85rem;margin-top:.35rem;border:1px solid #adb4c1;border-radius:8px"></label>
+      <label for="calc-years" style="font-weight:600">Years<input id="calc-years" type="number" min="1" max="60" step="1" value="20" style="display:block;width:100%;font:inherit;padding:.85rem;margin-top:.35rem;border:1px solid #adb4c1;border-radius:8px"></label>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:1rem;margin-top:1.4rem">
+      <div style="background:white;padding:1.5rem;border-radius:12px;border:1px solid #d5d8de"><p style="color:#4a5568;margin:0 0 .3rem">Estimated ending balance</p><strong id="calc-total" style="font-size:1.7rem" aria-live="polite">—</strong></div>
+      <div style="background:white;padding:1.5rem;border-radius:12px;border:1px solid #d5d8de"><p style="color:#4a5568;margin:0 0 .3rem">Your contributions</p><strong id="calc-paid" style="font-size:1.7rem">—</strong></div>
+      <div style="background:white;padding:1.5rem;border-radius:12px;border:1px solid #d5d8de"><p style="color:#4a5568;margin:0 0 .3rem">Estimated growth / loss</p><strong id="calc-gain" style="font-size:1.7rem">—</strong></div>
+    </div>
+    <p id="calc-error" role="status" style="color:#9d2828;margin:1rem 0 0"></p>
+    <p style="font-size:.85rem;color:#4a5568">Assumes monthly contributions at month-end and monthly compounding at one-twelfth the stated annual nominal rate. Excludes taxes, fees, and inflation.</p>
+  </div>
+</section>
+<script>
+(function(){
+ const fields=['initial','monthly','rate','years'].map(k=>document.getElementById('calc-'+k));
+ const fmt=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
+ function refresh(){
+   const [initial,monthly,rate,years]=fields.map(e=>Number(e.value));
+   if(fields.some(e=>e.value.trim()==='')||![initial,monthly,rate,years].every(Number.isFinite)||initial<0||initial>100000000||monthly<0||monthly>1000000||rate< -20||rate>20||!Number.isInteger(years)||years<1||years>60){
+      document.getElementById('calc-error').textContent='Enter valid values within the input ranges.';
+      for(const id of ['total','paid','gain'])document.getElementById('calc-'+id).textContent='—';
+      return;
+   }
+   document.getElementById('calc-error').textContent='';
+   const r=rate/1200; let total=initial;
+   for(let i=0;i<years*12;i++)total=total*(1+r)+monthly;
+   const paid=initial+monthly*years*12;
+   document.getElementById('calc-total').textContent=fmt.format(total);
+   document.getElementById('calc-paid').textContent=fmt.format(paid);
+   document.getElementById('calc-gain').textContent=fmt.format(total-paid);
+ }
+ fields.forEach(f=>f.addEventListener('input',refresh));refresh();
+})();
+</script>
 
 <!-- ── FOOTER ── -->
 <footer>
